@@ -548,7 +548,7 @@ tinymce.PluginManager.add("codehelper", function (noteEditor, sourceUrl) {
         (highLightTheme == "default" ? "/" + highLightTheme + ".min.css" : "/styles/" + highLightTheme + ".css")
     );
     // 在内容编辑器的iFrame正文中添加自定义样式表，包含区块(blockquote)的样式
-    this.dom.styleSheetLoader.load(sourceUrl + "/codehelper_content.css");
+    this.dom.styleSheetLoader.load(sourceUrl + "/style/codehelper_content.css");
   });
   noteEditor.on("SetContent", function () { // 设置编辑器内容事件，在内容解析并渲染后触发
     let unprocessedCodeBlock = noteEditor
