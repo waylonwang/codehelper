@@ -493,9 +493,26 @@ tinymce.PluginManager.add("codehelper", function (noteEditor, sourceUrl) {
       },
     }).show();
   }
+  /**
+   * 打开代码块编辑器
+   */
+  function insertTitleBlock() {
+    noteEditor.undoManager.transact(function () {
+      // 插入新的标题块
+      let html =
+        `<div style="background-color: #ebf5ff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border: 1px solid #b9d9f8; border-radius: 10px; margin-bottom: 10px; padding: 2px 10px 10px 10px;">
+          <h3 id="title">填写标题</h3>
+          <blockquote style="font-size: 0.8rem; border-left: 1px solid #b9d9f8;">填写副标题</span>
+        </blockquote>
+        </div>`;
+      noteEditor.insertContent(html);
+      noteEditor.selection.select(noteEditor.$("#__new").removeAttr("id")[0]); // 选中标题块
+    });
+  }
   // 添加TinyMCE命令
   noteEditor.addCommand("editSrcCode", openSourceCodeEditor);
   noteEditor.addCommand("editCodeBlock", openCodeBlockEditor);
+  noteEditor.addCommand("insertTitleBlock", insertTitleBlock);
 
   // 添加TinyMCE按钮
   noteEditor.addButton("srccode", {
@@ -517,9 +534,14 @@ tinymce.PluginManager.add("codehelper", function (noteEditor, sourceUrl) {
       };
     },
   });
+  noteEditor.addButton("titleblock", {
+    icon: "titleblock",
+    tooltip: "插入标题块",
+    cmd: "insertTitleBlock",
+  });
 
   // 添加TinyMCE工具栏按钮
-  noteEditor.settings.toolbar = "srccode | " + noteEditor.settings.toolbar.replace("hr", "codeblock blockquote hr");
+  noteEditor.settings.toolbar = "srccode | " + noteEditor.settings.toolbar.replace("hr", "codeblock titleblock blockquote hr");
 
   // TinyMCE事件处理
   noteEditor.on("PreInit", function (e) { // 初始化前事件，在加载编辑器后，加载编辑器内容前触发
@@ -529,6 +551,8 @@ tinymce.PluginManager.add("codehelper", function (noteEditor, sourceUrl) {
         '<svg class="codehelp_svg" width="24" height="24" focusable="false" style="vertical-align: baseline"><path d="M9.8 15.7c.3.3.3.8 0 1-.3.4-.9.4-1.2 0l-4.4-4.1a.8.8 0 010-1.2l4.4-4.2c.3-.3.9-.3 1.2 0 .3.3.3.8 0 1.1L6 12l3.8 3.7zM14.2 15.7c-.3.3-.3.8 0 1 .4.4.9.4 1.2 0l4.4-4.1c.3-.3.3-.9 0-1.2l-4.4-4.2a.8.8 0 00-1.2 0c-.3.3-.3.8 0 1.1L18 12l-3.8 3.7z" fill="#505a64" fill-rule="nonzero"></path></svg>',
       codeblock:
         '<svg class="codehelp_svg" width="24" height="26" focusable="false" style="vertical-align: baseline"><path d="M7.1 11a2.8 2.8 0 01-.8 2 2.8 2.8 0 01.8 2v1.7c0 .3.1.6.4.8.2.3.5.4.8.4.3 0 .4.2.4.4v.8c0 .2-.1.4-.4.4-.7 0-1.4-.3-2-.8-.5-.6-.8-1.3-.8-2V15c0-.3-.1-.6-.4-.8-.2-.3-.5-.4-.8-.4a.4.4 0 01-.4-.4v-.8c0-.2.2-.4.4-.4.3 0 .6-.1.8-.4.3-.2.4-.5.4-.8V9.3c0-.7.3-1.4.8-2 .6-.5 1.3-.8 2-.8.3 0 .4.2.4.4v.8c0 .2-.1.4-.4.4-.3 0-.6.1-.8.4-.3.2-.4.5-.4.8V11zm9.8 0V9.3c0-.3-.1-.6-.4-.8-.2-.3-.5-.4-.8-.4a.4.4 0 01-.4-.4V7c0-.2.1-.4.4-.4.7 0 1.4.3 2 .8.5.6.8 1.3.8 2V11c0 .3.1.6.4.8.2.3.5.4.8.4.2 0 .4.2.4.4v.8c0 .2-.2.4-.4.4-.3 0-.6.1-.8.4-.3.2-.4.5-.4.8v1.7c0 .7-.3 1.4-.8 2-.6.5-1.3.8-2 .8a.4.4 0 01-.4-.4v-.8c0-.2.1-.4.4-.4.3 0 .6-.1.8-.4.3-.2.4-.5.4-.8V15a2.8 2.8 0 01.8-2 2.8 2.8 0 01-.8-2zm-3.3-.4c0 .4-.1.8-.5 1.1-.3.3-.7.5-1.1.5-.4 0-.8-.2-1.1-.5-.4-.3-.5-.7-.5-1.1 0-.5.1-.9.5-1.2.3-.3.7-.4 1.1-.4.4 0 .8.1 1.1.4.4.3.5.7.5 1.2zM12 13c.4 0 .8.1 1.1.5.4.3.5.7.5 1.1 0 1-.1 1.6-.5 2a3 3 0 01-1.1 1c-.4.3-.8.4-1.1.4a.5.5 0 01-.5-.5V17a3 3 0 001-.2l.6-.6c-.6 0-1-.2-1.3-.5-.2-.3-.3-.7-.3-1 0-.5.1-1 .5-1.2.3-.4.7-.5 1.1-.5z" fill-rule="evenodd" fill="#505a64"></path></svg>',
+      titleblock:
+        '<svg class="codehelp_svg" width="16" height="26" viewBox="0 0 512 512" focusable="false" style="vertical-align: baseline; margin-left:3px"><path d="M336.174 80c-49.132 0-93.305-32-161.913-32-31.301 0-58.303 6.482-80.721 15.168a48.04 48.04 0 0 0 2.142-20.727C93.067 19.575 74.167 1.594 51.201.104 23.242-1.71 0 20.431 0 48c0 17.764 9.657 33.262 24 41.562V496c0 8.837 7.163 16 16 16h16c8.837 0 16-7.163 16-16v-83.443C109.869 395.28 143.259 384 199.826 384c49.132 0 93.305 32 161.913 32 58.479 0 101.972-22.617 128.548-39.981C503.846 367.161 512 352.051 512 335.855V95.937c0-34.459-35.264-57.768-66.904-44.117C409.193 67.309 371.641 80 336.174 80zM464 336c-21.783 15.412-60.824 32-102.261 32-59.945 0-102.002-32-161.913-32-43.361 0-96.379 9.403-127.826 24V128c21.784-15.412 60.824-32 102.261-32 59.945 0 102.002 32 161.913 32 43.271 0 96.32-17.366 127.826-32v240z" fill="#505a64"/></svg>',
       blockquote:
         '<svg class="codehelp_svg" width="24" height="24" style="vertical-align: baseline"><path d="M7.5 17h.9c.4 0 .7-.2.9-.6L11 13V8c0-.6-.4-1-1-1H6a1 1 0 00-1 1v4c0 .6.4 1 1 1h2l-1.3 2.7a1 1 0 00.8 1.3zm8 0h.9c.4 0 .7-.2.9-.6L19 13V8c0-.6-.4-1-1-1h-4a1 1 0 00-1 1v4c0 .6.4 1 1 1h2l-1.3 2.7a1 1 0 00.8 1.3z" fill-rule="nonzero" fill="#505a64"></path></svg>',
     };
